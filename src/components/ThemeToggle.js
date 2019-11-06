@@ -1,30 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { ThemeContext } from "../contexts/ThemeContext";
 import styled from "styled-components";
 
 const ThemeToggle = () => {
+  const { isLightTheme, toggleTheme, light, dark } = useContext(ThemeContext);
+  let titleButton = "Change to Dark Theme";
+  let theme = null;
+  if (isLightTheme) {
+    titleButton = "Change to Dark Theme";
+    theme = light;
+  } else {
+    titleButton = "Change to Light Theme";
+    theme = dark;
+  }
   return (
-    <ThemeContext.Consumer>
-      {themeContext => {
-        const { isLightTheme, toggleTheme, light, dark } = themeContext;
-        let titleButton = "Change to Dark Theme";
-        let theme = null;
-        if (isLightTheme) {
-          titleButton = "Change to Dark Theme";
-          theme = light;
-        } else {
-          titleButton = "Change to Light Theme";
-          theme = dark;
-        }
-
-        return (
-          <Button onClick={toggleTheme} theme={theme}>
-            {titleButton}
-          </Button>
-        );
-      }}
-    </ThemeContext.Consumer>
+    <Button onClick={toggleTheme} theme={theme}>
+      {titleButton}
+    </Button>
   );
 };
 
