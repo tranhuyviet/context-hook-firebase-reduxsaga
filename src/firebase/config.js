@@ -63,6 +63,32 @@ class Firebase {
       this.auth.onAuthStateChanged(resolve);
     });
   }
+
+  async createPost(post) {
+    //console.log(post);
+    const storageRef = firebase.storage().ref();
+    const storageChild = storageRef.child(post.cover.name);
+    const postCover = await storageChild.put(post.cover); //upload
+    const downloadURL = await storageChild.getDownloadURL(); //download
+    const fireRef = postCover.ref.location.path;
+
+    let newPost = {
+      title: post.title,
+      content: post.content,
+      cover: downloadURL,
+      fireref: fireRef
+    };
+
+    const firestorePost = await firebase
+      .firestore()
+      .collection("Posts")
+      .add(newPost)
+      .catch(error => {
+        console.log(error);
+        return error;
+      });
+    return firestorePost;
+  }
 }
 
 export default new Firebase();
