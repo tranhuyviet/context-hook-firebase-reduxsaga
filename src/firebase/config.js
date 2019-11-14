@@ -64,6 +64,31 @@ class Firebase {
     });
   }
 
+  //get all posts from firebase
+  async getPosts() {
+    let postArray = [];
+    const post = await firebase
+      .firestore()
+      .collection("Posts")
+      .get();
+    post.forEach(doc => {
+      postArray.push({ id: doc.id, data: doc.data() });
+    });
+    return postArray;
+  }
+
+  //get single post with id from firebase
+  async getPost(postId) {
+    const post = await firebase
+      .firestore()
+      .collection("Posts")
+      .doc(postId)
+      .get();
+    const postData = post.data();
+    return postData;
+  }
+
+  //upload post to firebase
   async createPost(post) {
     //console.log(post);
     const storageRef = firebase.storage().ref();

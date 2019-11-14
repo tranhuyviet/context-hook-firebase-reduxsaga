@@ -16,7 +16,7 @@ const Nav = props => {
         setUserEmail(user.email);
       }
     });
-  });
+  }, []);
 
   const logout = () => {
     firebase.logout();
