@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, withRouter } from "react-router-dom";
 import firebase from "../firebase/config";
 
@@ -31,6 +31,14 @@ const Create = props => {
         setIsBusy(false);
       });
   };
+
+  useEffect(() => {
+    firebase.getUserState().then(user => {
+      if (!user) {
+        props.history.replace("/login");
+      }
+    });
+  });
 
   const redirect = routeRedirect;
   if (redirect) {
@@ -77,4 +85,4 @@ const Create = props => {
   return <>{createForm}</>;
 };
 
-export default Create;
+export default withRouter(Create);
