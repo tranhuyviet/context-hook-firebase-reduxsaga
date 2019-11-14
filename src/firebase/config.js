@@ -116,14 +116,60 @@ class Firebase {
   }
 
   //update post
-  updatePost(postid, postData) {
+  async updatePost(postid, postData) {
     console.log("update post: ", postid, postData);
+    if (postData["cover"]) {
+      console.log("cover");
+      const storageRef = firebase.storage().ref();
+      const storageChild = storageRef.child(postData.cover.name);
+      const postCover = await storageChild.put(postData.cover); //upload
+      const downloadURL = await storageChild.getDownloadURL(); //download
+      const fileRef = postCover.ref.location.path;
+
+      await storageRef
+        .child(postData["oldcover"])
+        .delete()
+        .catch(error => {
+          console.log("delete image old");
+          console.log(error);
+        });
+
+      let updatedPost = {
+        title: postData.title,
+        content: postData.content,
+        cover: downloadURL,
+        fileref: fileRef
+      };
+
+      const post = await firebase
+        .firestore()
+        .collection("Posts")
+        .doc(postid)
+        .set(updatedPost, { merge: true })
+        .catch(error => {
+          console.log(error);
+        });
+
+      return post;
+    } else {
+      console.log("not cover", postData);
+
+      const post = await firebase
+        .firestore()
+        .collection("Posts")
+        .doc(postid)
+        .set(postData, { merge: true })
+        .catch(error => {
+          console.log(error);
+        });
+      return post;
+    }
   }
 
   //delete post
   async deletePost(postid, fileref) {
     //delete Image from firebase
-    console.log("delete post:", postid, fileref);
+    // console.log("delete post:", postid, fileref);
     const storageRef = firebase.storage().ref();
     await storageRef
       .child(fileref)

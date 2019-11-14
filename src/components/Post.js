@@ -52,13 +52,33 @@ const Post = props => {
   let deleteButton;
 
   const updateCurrentPost = e => {
-    e.preventDefaunt();
+    e.preventDefault();
+    console.log("updateform");
     setIsBusy(true);
 
     //create the object
     //update post
-    setIsBusy(false);
-    setRouteRedirect(true);
+    const _post = {
+      title: titleRef.current.value,
+      content: contentRef.current.value
+    };
+
+    if (fileRef.current.files.length > 0) {
+      _post["cover"] = fileRef.current.files[0];
+      _post["oldcover"] = post.fileref;
+    }
+
+    console.log(_post);
+    firebase
+      .updatePost(postId, _post)
+      .then(() => {
+        console.log("post updated");
+        setIsBusy(false);
+        setRouteRedirect(true);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   const toggleEditMode = () => {
