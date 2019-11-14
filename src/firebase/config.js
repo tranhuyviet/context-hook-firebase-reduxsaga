@@ -95,13 +95,13 @@ class Firebase {
     const storageChild = storageRef.child(post.cover.name);
     const postCover = await storageChild.put(post.cover); //upload
     const downloadURL = await storageChild.getDownloadURL(); //download
-    const fireRef = postCover.ref.location.path;
+    const fileRef = postCover.ref.location.path;
 
     let newPost = {
       title: post.title,
       content: post.content,
       cover: downloadURL,
-      fireref: fireRef
+      fileref: fileRef
     };
 
     const firestorePost = await firebase
@@ -113,6 +113,34 @@ class Firebase {
         return error;
       });
     return firestorePost;
+  }
+
+  //update post
+  updatePost(postid, postData) {
+    console.log("update post: ", postid, postData);
+  }
+
+  //delete post
+  async deletePost(postid, fileref) {
+    //delete Image from firebase
+    console.log("delete post:", postid, fileref);
+    const storageRef = firebase.storage().ref();
+    await storageRef
+      .child(fileref)
+      .delete()
+      .catch(error => console.log(error));
+    console.log("Image deleted");
+
+    //delete post from firebase
+    const post = await firebase
+      .firestore()
+      .collection("Posts")
+      .doc(postid)
+      .delete()
+      .catch(error => console.log(error));
+    console.log("Post delete");
+
+    return post;
   }
 }
 

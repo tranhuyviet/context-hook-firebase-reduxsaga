@@ -6,6 +6,7 @@ import Main from "./components/Main";
 import Signin from "./components/Signin";
 import Login from "./components/Login";
 import Create from "./components/Create";
+import Post from "./components/Post";
 
 const Routes = () => (
   <Switch>
@@ -13,6 +14,7 @@ const Routes = () => (
     <Route exact path="/signin" component={Signin} />
     <Route exact path="/login" component={Login} />
     <Route exact path="/create" component={Create} />
+    <Route exact path="/post/:id" component={Post} />
   </Switch>
 );
 
